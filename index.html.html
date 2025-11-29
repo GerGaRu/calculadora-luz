@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Tarifas Eléctricas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 3rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-group input:hover {
+            border-color: #cbd5e1;
+        }
+
+        .fixed-values {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            margin-top: 1rem;
+        }
+
+        .fixed-values h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .fixed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .fixed-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .fixed-label {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .fixed-value {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 1rem;
+        }
+
+        .tariffs-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .tariff-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .tariff-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .tariff-a {
+            border-top: 4px solid #3b82f6;
+        }
+
+        .tariff-b {
+            border-top: 4px solid #8b5cf6;
+        }
+
+        .tariff-card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tariff-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-a {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-b {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            margin-top: 2rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 2px solid #e2e8f0;
+        }
+
+        .result-card-a {
+            border-top: 4px solid #3b82f6;
+        }
+
+        .result-card-b {
+            border-top: 4px solid #8b5cf6;
+        }
+
+        .result-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            padding-top: 1.5rem;
+            margin-top: 1rem;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .result-label {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 1.05rem;
+        }
+
+        .total-value {
+            font-size: 1.75rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .comparison {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .comparison-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .comparison h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .comparison-percentage {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-cheaper {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .comparison-link {
+            display: inline-block;
+            background: white;
+            color: #0f172a;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .error {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            color: #991b1b;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+            .tariffs-container,
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .comparison-amount {
+                font-size: 2rem;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results {
+            animation: slideIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>
+                <span>⚡</span>
+                Calculadora de Tarifas Eléctricas
+            </h1>
+            <p>Compara tu tarifa actual con Octopus Relax y descubre cuánto puedes ahorrar</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="error" id="error"></div>
+
+        <!-- Datos Comunes -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">📊</div>
+                <h2>Datos Comunes</h2>
+            </div>
+            
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="consumo">Consumo estimado (kWh/mes)</label>
+                    <input type="number" id="consumo" value="300" step="1" min="0" placeholder="Ej: 300">
+                </div>
+                <div class="input-group">
+                    <label for="dias">Número de días del periodo</label>
+                    <input type="number" id="dias" value="30" step="1" min="1" placeholder="Ej: 30">
+                </div>
+                <div class="input-group">
+                    <label for="p1_comun">Potencia contratada P1 (kW)</label>
+                    <input type="number" id="p1_comun" value="3.45" step="0.01" min="0" placeholder="Ej: 3.45">
+                </div>
+                <div class="input-group">
+                    <label for="p2_comun">Potencia contratada P2 (kW)</label>
+                    <input type="number" id="p2_comun" value="3.45" step="0.01" min="0" placeholder="Ej: 3.45">
+                </div>
+                <div class="input-group">
+                    <label for="bono_social_comun">Bono social diario (€/día)</label>
+                    <input type="number" id="bono_social_comun" value="0.013" step="0.001" min="0" placeholder="Ej: 0.013">
+                </div>
+                <div class="input-group">
+                    <label for="alquiler_comun">Alquiler de equipos diario (€/día)</label>
+                    <input type="number" id="alquiler_comun" value="0.027" step="0.001" min="0" placeholder="Ej: 0.027">
+                </div>
+            </div>
+
+            <div class="fixed-values">
+                <h3>Valores Fijos (No Modificables)</h3>
+                <div class="fixed-grid">
+                    <div class="fixed-item">
+                        <span class="fixed-label">IVA</span>
+                        <span class="fixed-value">21%</span>
+                    </div>
+                    <div class="fixed-item">
+                        <span class="fixed-label">Impuesto eléctrico</span>
+                        <span class="fixed-value">5.11%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarifas A y B -->
+        <div class="tariffs-container">
+            <!-- Tarifa Octopus Relax -->
+            <div class="tariff-card tariff-a">
+                <h2>
+                    Tarifa de Octopus Relax
+                    <span class="tariff-badge badge-a">Predefinida</span>
+                </h2>
+                
+                <div class="fixed-values">
+                    <h3>Valores Predefinidos</h3>
+                    <div class="fixed-grid">
+                        <div class="fixed-item">
+                            <span class="fixed-label">Precio potencia P1</span>
+                            <span class="fixed-value">0.095 €/kW/día</span>
+                        </div>
+                        <div class="fixed-item">
+                            <span class="fixed-label">Precio potencia P2</span>
+                            <span class="fixed-value">0.027 €/kW/día</span>
+                        </div>
+                        <div class="fixed-item">
+                            <span class="fixed-label">Precio energía</span>
+                            <span class="fixed-value">0.119 €/kWh</span>
+                        </div>
+                        <div class="fixed-item">
+                            <span class="fixed-label">Cuota fija</span>
+                            <span class="fixed-value">0 €/mes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tu Tarifa -->
+            <div class="tariff-card tariff-b">
+                <h2>
+                    Tu Tarifa
+                    <span class="tariff-badge badge-b">Personalizada</span>
+                </h2>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="precio_p1_b">Precio potencia P1 (€/kW/día)</label>
+                        <input type="number" id="precio_p1_b" value="0.095" step="0.001" min="0" placeholder="Ej: 0.095">
+                    </div>
+                    <div class="input-group">
+                        <label for="precio_p2_b">Precio potencia P2 (€/kW/día)</label>
+                        <input type="number" id="precio_p2_b" value="0.027" step="0.001" min="0" placeholder="Ej: 0.027">
+                    </div>
+                    <div class="input-group">
+                        <label for="precio_energia_b">Precio energía (€/kWh)</label>
+                        <input type="number" id="precio_energia_b" value="0.119" step="0.001" min="0" placeholder="Ej: 0.119">
+                    </div>
+                    <div class="input-group">
+                        <label for="cuota_fija_b">Cuota fija mensual (€/mes)</label>
+                        <input type="number" id="cuota_fija_b" value="0" step="0.01" min="0" placeholder="Ej: 0">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="calculate-btn" onclick="calcular()">Calcular Comparativa</button>
+
+        <!-- Resultados -->
+        <div class="results" id="results" style="display: none;">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">📈</div>
+                    <h2>Resultados del Cálculo</h2>
+                </div>
+                
+                <div class="results-grid">
+                    <!-- Resultados Tarifa Octopus Relax -->
+                    <div class="result-card result-card-a">
+                        <h3>
+                            <span>🐙</span>
+                            Octopus Relax
+                        </h3>
+                        <div class="result-item">
+                            <span class="result-label">Término de energía</span>
+                            <span class="result-value" id="energia_a">0 €</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Término de potencia</span>
+                            <span class="result-value" id="potencia_a">0 €</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Otros conceptos fijos</span>
+                            <span class="result-value" id="otros_a">0 €</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Impuestos totales</span>
+                            <span class="result-value" id="impuestos_a">0 €</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">TOTAL MENSUAL</span>
+                            <span class="result-value total-value" id="total_a">0 €</span>
+                        </div>
+                    </div>
+
+                    <!-- Resultados Tu Tarifa -->
+                    <div class="result-card result-card-b">
+                        <h3>
+                            <span>💼</span>
+                            Tu Tarifa
+                        </h3>
+                        <div class="result-item">
+                            <span class="result-label">Término de energía</span>
+                            <span class="result-value" id="energia_b">0 €</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Término de potencia</span>
+                            <span class="result-value" id="potencia_b">0 €</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Otros conceptos fijos</span>
+                            <span class="result-value" id="otros_b">0 €</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Impuestos totales</span>
+                            <span class="result-value" id="impuestos_b">0 €</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">TOTAL MENSUAL</span>
+                            <span class="result-value total-value" id="total_b">0 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparativa -->
+                <div class="comparison" id="comparison"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // CONSTANTES DE TARIFA A (PREDEFINIDAS)
+        // ========================================
+        const TARIFA_A = {
+            precio_p1: 0.095,        // €/kW/día
+            precio_p2: 0.027,        // €/kW/día
+            precio_energia: 0.119,   // €/kWh
+            cuota_fija: 0            // €/mes
+        };
+
+        /**
+         * Función principal de cálculo
+         * Obtiene todos los valores, valida y realiza los cálculos para ambas tarifas
+         */
+        function calcular() {
+            // Ocultar error anterior
+            document.getElementById('error').style.display = 'none';
+
+            try {
+                // ========================================
+                // OBTENER VALORES COMUNES
+                // ========================================
+                const consumo = parseFloat(document.getElementById('consumo').value);
+                const dias = parseFloat(document.getElementById('dias').value);
+                const p1_comun = parseFloat(document.getElementById('p1_comun').value);
+                const p2_comun = parseFloat(document.getElementById('p2_comun').value);
+                const bono_social_comun = parseFloat(document.getElementById('bono_social_comun').value);
+                const alquiler_comun = parseFloat(document.getElementById('alquiler_comun').value);
+                
+                // Valores fijos de impuestos
+                const iva = 21;
+                const impuesto_electrico = 5.11;
+
+                // ========================================
+                // OBTENER VALORES TARIFA B
+                // ========================================
+                const precio_p1_b = parseFloat(document.getElementById('precio_p1_b').value);
+                const precio_p2_b = parseFloat(document.getElementById('precio_p2_b').value);
+                const precio_energia_b = parseFloat(document.getElementById('precio_energia_b').value);
+                const cuota_fija_b = parseFloat(document.getElementById('cuota_fija_b').value);
+
+                // ========================================
+                // VALIDACIÓN DE VALORES
+                // ========================================
+                const valores = [consumo, dias, p1_comun, p2_comun, bono_social_comun, alquiler_comun,
+                               precio_p1_b, precio_p2_b, precio_energia_b, cuota_fija_b];
+
+                if (valores.some(v => isNaN(v) || v < 0)) {
+                    mostrarError('Por favor, introduce valores numéricos válidos (no negativos) en todos los campos.');
+                    return;
+                }
+
+                // ========================================
+                // CALCULAR TARIFA A
+                // ========================================
+                const resultadoA = calcularTarifa(
+                    consumo, dias, 
+                    p1_comun, p2_comun,
+                    TARIFA_A.precio_p1, TARIFA_A.precio_p2, TARIFA_A.precio_energia,
+                    bono_social_comun, alquiler_comun, TARIFA_A.cuota_fija,
+                    iva, impuesto_electrico
+                );
+
+                // ========================================
+                // CALCULAR TARIFA B
+                // ========================================
+                const resultadoB = calcularTarifa(
+                    consumo, dias,
+                    p1_comun, p2_comun,
+                    precio_p1_b, precio_p2_b, precio_energia_b,
+                    bono_social_comun, alquiler_comun, cuota_fija_b,
+                    iva, impuesto_electrico
+                );
+
+                // ========================================
+                // MOSTRAR RESULTADOS
+                // ========================================
+                mostrarResultados(resultadoA, resultadoB);
+
+            } catch (error) {
+                mostrarError('Ha ocurrido un error en el cálculo. Por favor, revisa los datos introducidos.');
+                console.error(error);
+            }
+        }
+
+        /**
+         * Calcula todos los conceptos de una tarifa
+         * @returns objeto con todos los valores calculados
+         */
+        function calcularTarifa(
+          consumo,              // kWh del periodo
+          dias,                 // días del periodo de facturación
+          p1, p2,               // potencia contratada en kW (punta y valle)
+          precio_p1, precio_p2, // precio potencia en €/kW/día (punta y valle)
+          precio_energia,       // precio energía único en €/kWh
+          bono_social_dia,      // bono social en €/día
+          alquiler_equipos_dia, // alquiler equipos en €/día
+          cuota_fija,           // cuota fija de la comercializadora (€/periodo)
+          iva,                  // % IVA, por ejemplo 21
+          impuesto_electrico    // % impuesto eléctrico, por ejemplo 5.11
+        ) {
+          // 1) Término de energía
+          const termino_energia = consumo * precio_energia;
+          // 2) Término de potencia (punta + valle)
+          const termino_potencia = dias * (p1 * precio_p1 + p2 * precio_p2);
+          // 3) Otros conceptos diarios
+          const bono_social_total = dias * bono_social_dia;
+          const alquiler_total    = dias * alquiler_equipos_dia;
+          // 4) Subtotal sin impuestos (todos los conceptos "limpios")
+          const subtotal_sin_impuestos =
+            termino_energia +
+            termino_potencia +
+            bono_social_total +
+            alquiler_total +
+            cuota_fija;
+          // 5) Impuesto eléctrico: SOLO sobre potencia + energía
+          const base_impuesto_electrico = termino_energia + termino_potencia;
+          const imp_electrico = base_impuesto_electrico * (impuesto_electrico / 100);
+          // 6) IVA: sobre todos los conceptos + impuesto eléctrico
+          const base_iva = subtotal_sin_impuestos + imp_electrico;
+          const imp_iva  = base_iva * (iva / 100);
+          // 7) Total final
+          const total = subtotal_sin_impuestos + imp_electrico + imp_iva;
+          return {
+            termino_energia,
+            termino_potencia,
+            bono_social_total,
+            alquiler_total,
+            cuota_fija,
+            imp_electrico,
+            imp_iva,
+            total,
+            subtotal_sin_impuestos,
+            base_impuesto_electrico,
+            base_iva
+          };
+        }
+
+        /**
+         * Muestra los resultados en la interfaz y calcula la comparativa
+         */
+        function mostrarResultados(resultadoA, resultadoB) {
+            // Mostrar sección de resultados
+            document.getElementById('results').style.display = 'block';
+
+            // Calcular otros conceptos fijos (bono social + alquiler)
+            const otros_a = resultadoA.bono_social_total + resultadoA.alquiler_total;
+            const otros_b = resultadoB.bono_social_total + resultadoB.alquiler_total;
+            
+            // Calcular impuestos totales
+            const impuestos_a = resultadoA.imp_electrico + resultadoA.imp_iva;
+            const impuestos_b = resultadoB.imp_electrico + resultadoB.imp_iva;
+
+            // Mostrar resultados Tarifa A
+            document.getElementById('energia_a').textContent = resultadoA.termino_energia.toFixed(2) + ' €';
+            document.getElementById('potencia_a').textContent = resultadoA.termino_potencia.toFixed(2) + ' €';
+            document.getElementById('otros_a').textContent = otros_a.toFixed(2) + ' €';
+            document.getElementById('impuestos_a').textContent = impuestos_a.toFixed(2) + ' €';
+            document.getElementById('total_a').textContent = resultadoA.total.toFixed(2) + ' €';
+
+            // Mostrar resultados Tarifa B
+            document.getElementById('energia_b').textContent = resultadoB.termino_energia.toFixed(2) + ' €';
+            document.getElementById('potencia_b').textContent = resultadoB.termino_potencia.toFixed(2) + ' €';
+            document.getElementById('otros_b').textContent = otros_b.toFixed(2) + ' €';
+            document.getElementById('impuestos_b').textContent = impuestos_b.toFixed(2) + ' €';
+            document.getElementById('total_b').textContent = resultadoB.total.toFixed(2) + ' €';
+
+            // ========================================
+            // CALCULAR COMPARATIVA
+            // ========================================
+            const diferencia_absoluta = resultadoB.total - resultadoA.total;
+            const diferencia_relativa = (diferencia_absoluta / resultadoA.total) * 100;
+
+            // Generar texto de comparativa
+            let textoComparativa = '';
+            let claseComparativa = '';
+            
+            if (diferencia_absoluta < 0) {
+                // Tu Tarifa es MÁS BARATA que Octopus Relax
+                claseComparativa = 'comparison-cheaper';
+                textoComparativa = `
+                    <div class="comparison-icon">✅</div>
+                    <h3>Tu Tarifa es más económica</h3>
+                    <div class="comparison-amount">${Math.abs(diferencia_absoluta).toFixed(2)} €/mes</div>
+                    <div class="comparison-percentage">Ahorro del ${Math.abs(diferencia_relativa).toFixed(2)}%</div>
+                    <p>Tu tarifa actual es mejor que Octopus Relax. ¡Mantén tu tarifa!</p>
+                `;
+            } else if (diferencia_absoluta > 0) {
+                // Octopus Relax es MÁS BARATO que Tu Tarifa (AQUÍ VA EL ENLACE)
+                claseComparativa = 'comparison-cheaper';
+                textoComparativa = `
+                    <div class="comparison-icon">🐙</div>
+                    <h3>Octopus Relax es más económico</h3>
+                    <div class="comparison-amount">${diferencia_absoluta.toFixed(2)} €/mes</div>
+                    <div class="comparison-percentage">Ahorrarías un ${diferencia_relativa.toFixed(2)}%</div>
+                    <p>Con Octopus Relax ahorrarías dinero cada mes. ¡Es una mejor opción!</p>
+                    <p style="margin-top: 1.5rem; font-size: 1.1rem;">Puedes contratar la tarifa "Octopus Relax" (y llevarte 50€ de ahorro en tu factura) en el siguiente enlace:</p>
+                    <a href="https://share.octopusenergy.es/lucky-violin-424" target="_blank" rel="noopener noreferrer" class="comparison-link">
+                        🎁 Contratar Octopus Relax y obtener 50€ de descuento →
+                    </a>
+                `;
+            } else {
+                // Ambas tarifas cuestan lo mismo
+                textoComparativa = `
+                    <div class="comparison-icon">⚖️</div>
+                    <h3>Ambas tarifas tienen el mismo coste</h3>
+                    <div class="comparison-amount">0 €/mes</div>
+                    <div class="comparison-percentage">Sin diferencia</div>
+                    <p>Las dos tarifas resultan en el mismo coste mensual.</p>
+                `;
+            }
+
+            const comparisonDiv = document.getElementById('comparison');
+            comparisonDiv.className = 'comparison ' + claseComparativa;
+            comparisonDiv.innerHTML = textoComparativa;
+
+            // Scroll suave hasta los resultados
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        /**
+         * Muestra un mensaje de error
+         */
+        function mostrarError(mensaje) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '⚠️ ' + mensaje;
+            errorDiv.style.display = 'block';
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Calcular automáticamente al cargar la página con valores por defecto
+        window.addEventListener('load', calcular);
+    </script>
+</body>
+</html>
