@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculador de Tarifas Eléctricas</title>
+    <title>Calculadora de Tarifas Eléctricas</title>
     <style>
         * {
             margin: 0;
@@ -446,11 +446,11 @@
         <class="header-content">
             <h1>
                 <span>⚡</span>
-                Calculadora de Tarifas Eléctricas
+                ¡Descubre cuánto puedes ahorrar en tu tarifa eléctrica!
             </h1>
-            <p>Compara tu tarifa actual con Octopus Relax y descubre cuánto puedes ahorrar</p>
+            <p>Introduce los datos de tu consumo mensual y tu tarifa</p>
             <p>Sólo si ahorras con la nueva tarifa, te aparecerá el enlace para contratar</p>
-            <p>Por cambiarte desde ese enlace, te llevarás 50€ de crédito de luz (70€ hasta el 1 de diciembre)</p>
+            <p>Por cambiarte desde ese enlace, te llevarás 50€ de crédito de luz</p>
         </div>
     </div>
 
@@ -481,19 +481,21 @@
                     <label for="p2_comun">Potencia contratada P2 (kW)</label>
                     <input type="number" id="p2_comun" value="3.45" step="0.01" min="0" placeholder="Ej: 3.45">
                 </div>
-                <div class="input-group">
-                    <label for="bono_social_comun">Bono social diario (€/día)</label>
-                    <input type="number" id="bono_social_comun" value="0.013" step="0.001" min="0" placeholder="Ej: 0.013">
-                </div>
-                <div class="input-group">
-                    <label for="alquiler_comun">Alquiler de equipos diario (€/día)</label>
-                    <input type="number" id="alquiler_comun" value="0.027" step="0.001" min="0" placeholder="Ej: 0.027">
-                </div>
+
             </div>
 
             <div class="fixed-values">
+                
                 <h3>Valores Fijos (No Modificables)</h3>
                 <div class="fixed-grid">
+                    <div class="fixed-item">
+                        <span class="fixed-label">Impuesto bono social diario (€/día)</span>
+                        <span class="fixed-value">0.013</span>
+                    </div>
+                    <div class="fixed-item">
+                        <span class="fixed-label">Alquiler de equipos diario (€/día)</span>
+                        <span class="fixed-value">0.027</span>
+                    </div>
                     <div class="fixed-item">
                         <span class="fixed-label">IVA</span>
                         <span class="fixed-value">21%</span>
@@ -511,7 +513,7 @@
             <!-- Tarifa Octopus Relax -->
             <div class="tariff-card tariff-a">
                 <h2>
-                    Tarifa de Octopus Relax
+                    Tarifa de Octopus Relax (sin IVA)
                     <span class="tariff-badge badge-a">Predefinida</span>
                 </h2>
                 
@@ -541,7 +543,7 @@
             <!-- Tu Tarifa -->
             <div class="tariff-card tariff-b">
                 <h2>
-                    Tu Actual Tarifa
+                    Tu Tarifa Actual (sin IVA)
                     <span class="tariff-badge badge-b">Personalizada</span>
                 </h2>
                 
@@ -667,8 +669,8 @@
                 const dias = parseFloat(document.getElementById('dias').value);
                 const p1_comun = parseFloat(document.getElementById('p1_comun').value);
                 const p2_comun = parseFloat(document.getElementById('p2_comun').value);
-                const bono_social_comun = parseFloat(document.getElementById('bono_social_comun').value);
-                const alquiler_comun = parseFloat(document.getElementById('alquiler_comun').value);
+                const bono_social_comun = 0.013; // €/día;
+                const alquiler_comun = 0.027; // €/día;
                 
                 // Valores fijos de impuestos
                 const iva = 21;
