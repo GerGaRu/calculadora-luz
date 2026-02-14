@@ -134,6 +134,54 @@
             margin-top: 1rem;
         }
 
+        .fixed-values-toggle {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            border: 2px solid #cbd5e1;
+            margin-top: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .fixed-values-toggle:hover {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            border-color: #94a3b8;
+        }
+
+        .fixed-values-toggle h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+            color: #64748b;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .fixed-values-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .fixed-values-content.open {
+            max-height: 500px;
+        }
+
         .fixed-values h3 {
             font-size: 0.875rem;
             font-weight: 600;
@@ -377,6 +425,39 @@
             box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
         }
 
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .share-btn:active {
+            transform: translateY(0);
+        }
+
         .error {
             background: #fee2e2;
             border-left: 4px solid #dc2626;
@@ -386,6 +467,27 @@
             margin-bottom: 2rem;
             display: none;
             font-weight: 500;
+        }
+
+        .success-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .success-toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @media (max-width: 1024px) {
@@ -423,6 +525,15 @@
             .comparison-amount {
                 font-size: 2rem;
             }
+
+            .share-buttons {
+                flex-direction: column;
+            }
+
+            .share-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
 
         @keyframes slideIn {
@@ -443,7 +554,7 @@
 </head>
 <body>
     <div class="header">
-        <class="header-content">
+        <div class="header-content">
             <h1>
                 <span>⚡</span>
                 ¡Descubre cuánto puedes ahorrar en tu tarifa eléctrica!
@@ -481,28 +592,33 @@
                     <label for="p2_comun">Potencia contratada P2 (kW)</label>
                     <input type="number" id="p2_comun" value="3.45" step="0.01" min="0" placeholder="Ej: 3.45">
                 </div>
-
             </div>
 
-            <div class="fixed-values">
-                
+            <!-- Toggle para valores fijos -->
+            <div class="fixed-values-toggle" onclick="toggleFixedValues()">
                 <h3>Valores Fijos (No Modificables)</h3>
-                <div class="fixed-grid">
-                    <div class="fixed-item">
-                        <span class="fixed-label">Impuesto bono social diario (€/día)</span>
-                        <span class="fixed-value">0.013</span>
-                    </div>
-                    <div class="fixed-item">
-                        <span class="fixed-label">Alquiler de equipos diario (€/día)</span>
-                        <span class="fixed-value">0.027</span>
-                    </div>
-                    <div class="fixed-item">
-                        <span class="fixed-label">IVA</span>
-                        <span class="fixed-value">21%</span>
-                    </div>
-                    <div class="fixed-item">
-                        <span class="fixed-label">Impuesto eléctrico</span>
-                        <span class="fixed-value">5.11%</span>
+                <span class="toggle-icon" id="toggleIcon">▼</span>
+            </div>
+
+            <div class="fixed-values-content" id="fixedValuesContent">
+                <div class="fixed-values">
+                    <div class="fixed-grid">
+                        <div class="fixed-item">
+                            <span class="fixed-label">Impuesto bono social diario (€/día)</span>
+                            <span class="fixed-value">0.013</span>
+                        </div>
+                        <div class="fixed-item">
+                            <span class="fixed-label">Alquiler de equipos diario (€/día)</span>
+                            <span class="fixed-value">0.027</span>
+                        </div>
+                        <div class="fixed-item">
+                            <span class="fixed-label">IVA</span>
+                            <span class="fixed-value">21%</span>
+                        </div>
+                        <div class="fixed-item">
+                            <span class="fixed-label">Impuesto eléctrico</span>
+                            <span class="fixed-value">5.11%</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -642,6 +758,11 @@
         </div>
     </div>
 
+    <!-- Toast de éxito para copiar enlace -->
+    <div class="success-toast" id="successToast">
+        ✓ Enlace copiado al portapapeles
+    </div>
+
     <script>
         // ========================================
         // CONSTANTES DE TARIFA A (PREDEFINIDAS)
@@ -652,6 +773,162 @@
             precio_energia: 0.122,   // €/kWh
             cuota_fija: 0            // €/mes
         };
+
+        // Variable global para almacenar los últimos resultados
+        let ultimosResultados = {
+            ahorro: 0,
+            porcentaje: 0
+        };
+
+        /**
+         * Toggle para mostrar/ocultar valores fijos
+         */
+        function toggleFixedValues() {
+            const content = document.getElementById('fixedValuesContent');
+            const icon = document.getElementById('toggleIcon');
+            
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+
+        /**
+         * Cargar parámetros desde la URL si existen
+         */
+        function cargarParametrosURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('consumo')) {
+                document.getElementById('consumo').value = urlParams.get('consumo');
+            }
+            if (urlParams.has('dias')) {
+                document.getElementById('dias').value = urlParams.get('dias');
+            }
+            if (urlParams.has('p1')) {
+                document.getElementById('p1_comun').value = urlParams.get('p1');
+            }
+            if (urlParams.has('p2')) {
+                document.getElementById('p2_comun').value = urlParams.get('p2');
+            }
+            if (urlParams.has('precio_p1_b')) {
+                document.getElementById('precio_p1_b').value = urlParams.get('precio_p1_b');
+            }
+            if (urlParams.has('precio_p2_b')) {
+                document.getElementById('precio_p2_b').value = urlParams.get('precio_p2_b');
+            }
+            if (urlParams.has('precio_energia_b')) {
+                document.getElementById('precio_energia_b').value = urlParams.get('precio_energia_b');
+            }
+            if (urlParams.has('cuota_fija_b')) {
+                document.getElementById('cuota_fija_b').value = urlParams.get('cuota_fija_b');
+            }
+        }
+
+        /**
+         * Generar URL con parámetros actuales
+         * Maneja tanto URLs de servidor como archivos locales
+         */
+        function generarURLConParametros() {
+            // Obtener la URL base
+            let baseURL;
+            if (window.location.protocol === 'file:') {
+                // Si es un archivo local, usar la URL de GitHub Pages
+                baseURL = 'https://gergaru.github.io/calculadora-luz/';
+                console.warn('Archivo local detectado. Usando URL de GitHub Pages: ' + baseURL);
+            } else {
+                // Si está en un servidor, usar la URL real
+                baseURL = window.location.origin + window.location.pathname;
+            }
+            
+            // Crear parámetros URL
+            const params = new URLSearchParams({
+                consumo: document.getElementById('consumo').value,
+                dias: document.getElementById('dias').value,
+                p1: document.getElementById('p1_comun').value,
+                p2: document.getElementById('p2_comun').value,
+                precio_p1_b: document.getElementById('precio_p1_b').value,
+                precio_p2_b: document.getElementById('precio_p2_b').value,
+                precio_energia_b: document.getElementById('precio_energia_b').value,
+                cuota_fija_b: document.getElementById('cuota_fija_b').value
+            });
+            
+            const urlCompleta = `${baseURL}?${params.toString()}`;
+            console.log('URL generada:', urlCompleta);
+            return urlCompleta;
+        }
+
+        /**
+         * Compartir por WhatsApp
+         * Usa los valores almacenados globalmente
+         */
+        function compartirWhatsApp() {
+            try {
+                const url = generarURLConParametros();
+                const ahorro = ultimosResultados.ahorro;
+                const porcentaje = ultimosResultados.porcentaje;
+                
+                const mensaje = `🐙 ¡Puedo ahorrar ${ahorro.toFixed(2)}€/mes (${porcentaje.toFixed(2)}%) cambiándome a Octopus Relax!\n\n` +
+                              `Comprueba cuánto puedes ahorrar tú también:\n${url}`;
+                
+                const whatsappURL = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+                console.log('Abriendo WhatsApp con:', mensaje);
+                window.open(whatsappURL, '_blank');
+            } catch (error) {
+                console.error('Error al compartir por WhatsApp:', error);
+                alert('Hubo un error al compartir por WhatsApp. Por favor, intenta de nuevo.');
+            }
+        }
+
+        /**
+         * Copiar enlace al portapapeles
+         */
+        async function copiarEnlace() {
+            try {
+                const url = generarURLConParametros();
+                console.log('Intentando copiar URL:', url);
+                
+                // Intentar usar la API moderna de portapapeles
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(url);
+                    mostrarToast('Enlace copiado al portapapeles');
+                } else {
+                    // Fallback para navegadores antiguos
+                    const textArea = document.createElement('textarea');
+                    textArea.value = url;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-999999px';
+                    textArea.style.top = '0';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    
+                    const exitoso = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    if (exitoso) {
+                        mostrarToast('Enlace copiado al portapapeles');
+                    } else {
+                        throw new Error('No se pudo copiar');
+                    }
+                }
+            } catch (err) {
+                console.error('Error al copiar:', err);
+                const url = generarURLConParametros();
+                alert('No se pudo copiar automáticamente. Copia este enlace manualmente:\n\n' + url);
+            }
+        }
+
+        /**
+         * Mostrar toast de confirmación
+         */
+        function mostrarToast(mensaje = 'Enlace copiado al portapapeles') {
+            const toast = document.getElementById('successToast');
+            toast.textContent = '✓ ' + mensaje;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
 
         /**
          * Función principal de cálculo
@@ -816,6 +1093,10 @@
             const diferencia_absoluta = resultadoB.total - resultadoA.total;
             const diferencia_relativa = (diferencia_absoluta / resultadoA.total) * 100;
 
+            // Guardar resultados globalmente para compartir
+            ultimosResultados.ahorro = diferencia_absoluta;
+            ultimosResultados.porcentaje = diferencia_relativa;
+
             // Generar texto de comparativa
             let textoComparativa = '';
             let claseComparativa = '';
@@ -831,7 +1112,7 @@
                     <p>Tu tarifa actual es mejor que Octopus Relax. ¡Mantén tu tarifa!</p>
                 `;
             } else if (diferencia_absoluta > 0) {
-                // Octopus Relax es MÁS BARATO que Tu Tarifa (AQUÍ VA EL ENLACE)
+                // Octopus Relax es MÁS BARATO que Tu Tarifa (AQUÍ VAN LOS BOTONES)
                 claseComparativa = 'comparison-cheaper';
                 textoComparativa = `
                     <div class="comparison-icon">🐙</div>
@@ -843,6 +1124,14 @@
                     <a href="https://share.octopusenergy.es/lucky-violin-424" target="_blank" rel="noopener noreferrer" class="comparison-link">
                         🎁 Contratar Octopus Relax y obtener 50€ de descuento →
                     </a>
+                    <div class="share-buttons">
+                        <button class="share-btn" onclick="compartirWhatsApp()">
+                            📱 Compartir por WhatsApp
+                        </button>
+                        <button class="share-btn" onclick="copiarEnlace()">
+                            🔗 Copiar enlace
+                        </button>
+                    </div>
                 `;
             } else {
                 // Ambas tarifas cuestan lo mismo
@@ -873,8 +1162,11 @@
             errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        // Calcular automáticamente al cargar la página con valores por defecto
-        window.addEventListener('load', calcular);
+        // Cargar parámetros de URL al iniciar y calcular automáticamente
+        window.addEventListener('load', () => {
+            cargarParametrosURL();
+            calcular();
+        });
     </script>
 </body>
 </html>
