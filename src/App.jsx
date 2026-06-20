@@ -220,27 +220,36 @@ export default function App() {
     }
   }
 
-  const params = new URLSearchParams({
-    consumo: form.consumo,
-    dias: form.dias,
-    p1: form.p1,
-    p2: form.p2,
+  function generateUrlWithParams() {
+    const baseUrl = `${window.location.origin}${window.location.pathname}`
 
-    precio_p1_b: form.precioP1B,
-    precio_p2_b: form.precioP2B,
-    precio_energia_b: form.precioEnergiaB,
-    cuota_fija_b: form.cuotaFijaB,
+    const params = new URLSearchParams({
+      dias: form.dias,
+      p1: form.p1,
+      p2: form.p2,
 
-    tipo_tarifa_b: form.tipoTarifaB,
+      precio_p1_b: form.precioP1B,
+      precio_p2_b: form.precioP2B,
+      cuota_fija_b: form.cuotaFijaB,
 
-    consumo_punta_b: form.consumoPuntaB,
-    consumo_llano_b: form.consumoLlanoB,
-    consumo_valle_b: form.consumoValleB,
+      tipo_tarifa_b: form.tipoTarifaB,
+    })
 
-    precio_energia_punta_b: form.precioEnergiaPuntaB,
-    precio_energia_llano_b: form.precioEnergiaLlanoB,
-    precio_energia_valle_b: form.precioEnergiaValleB,
-  })
+    if (form.tipoTarifaB === TIPO_TARIFA.TRAMOS) {
+      params.set('consumo_punta_b', form.consumoPuntaB)
+      params.set('consumo_llano_b', form.consumoLlanoB)
+      params.set('consumo_valle_b', form.consumoValleB)
+
+      params.set('precio_energia_punta_b', form.precioEnergiaPuntaB)
+      params.set('precio_energia_llano_b', form.precioEnergiaLlanoB)
+      params.set('precio_energia_valle_b', form.precioEnergiaValleB)
+    } else {
+      params.set('consumo', form.consumo)
+      params.set('precio_energia_b', form.precioEnergiaB)
+    }
+
+    return `${baseUrl}?${params.toString()}`
+  }
 
   function showToast(message) {
     setToastMessage(message)
